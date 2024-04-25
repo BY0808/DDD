@@ -210,7 +210,7 @@ namespace Chapter2_BY
             Console.WriteLine("0. 나가기\n");
         }
 
-        bool DungeonResult(int requiredDefense) // 확률로 던전 성공여부 반환
+        void DungeonResult(int requiredDefense) // 확률로 던전 성공여부 반환
         {
             if (totalDefense < requiredDefense)
             {
@@ -220,18 +220,15 @@ namespace Chapter2_BY
                     Console.WriteLine("던전에 실패 하였습니다.");
                     Console.WriteLine("체력이 반 감소합니다.");
                     Character.warrior.HP = (int)(Character.warrior.HP * 0.5); // 실패시 체력 절반 감소
-                    return false;
                 }
                 else
                 {
                     DungeonSuccess(requiredDefense);
-                    return true;
                 }
             }
             else
             {
                 DungeonSuccess(requiredDefense);
-                return true;
             }
         }
 
@@ -247,6 +244,8 @@ namespace Chapter2_BY
             Console.WriteLine("\n[탐험 결과]");
             Console.WriteLine("체력 " + Character.warrior.HP + " -> " + nowHP);
             Console.WriteLine("Gold " + Character.warrior.Gold + " -> " + nowGold);
+            Character.warrior.HP = nowHP;
+            Character.warrior.Gold = nowGold;
             Console.WriteLine("\n0. 나가기\n");
         }
 
@@ -255,17 +254,17 @@ namespace Chapter2_BY
             int randomBonus = new Random().Next(0, 10);
             if (level == 1)
             {
-                nowGold = 1000 + totalAttack * (int)(1 + randomBonus * 0.1);
+                nowGold = 1000 + totalAttack * (int)(randomBonus * 0.1);
                 return nowGold;
             }
             else if (level == 2)
             {
-                nowGold = 1700 + totalAttack * (int)(1 + randomBonus * 0.1);
+                nowGold = 1700 + totalAttack * (int)(randomBonus * 0.1);
                 return nowGold;
             }
             else
             {
-                nowGold = 2500 + totalAttack * (int)(1 + randomBonus * 0.1);
+                nowGold = 2500 + totalAttack * (int)(randomBonus * 0.1);
                 return nowGold;
             }
         }
@@ -285,6 +284,7 @@ namespace Chapter2_BY
             {
                 DungeonResult(17);
             }
+            else Console.WriteLine("잘못된 입력입니다.");
         }
     }
 
@@ -457,6 +457,9 @@ namespace Chapter2_BY
                         dungeon.ShowDungeon(); // 던전 리스트 보여주기
                         nextMove();
                         dungeon.DoDungeon(select);
+                        nextMove();
+                        if (select == 0) break;
+                        else Console.WriteLine("잘못된 입력입니다.");
                     }
                 }
                 else if (select == 0)
