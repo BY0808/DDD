@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "G:\\C#\\C#Week1\\Chapter2_BY\\Chapter2_BY.csproj": {}
+    "G:\\C#\\TIL\\Chapter2_BY\\Chapter2_BY.csproj": {}
   },
   "projects": {
-    "G:\\C#\\C#Week1\\Chapter2_BY\\Chapter2_BY.csproj": {
+    "G:\\C#\\TIL\\Chapter2_BY\\Chapter2_BY.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\C#\\C#Week1\\Chapter2_BY\\Chapter2_BY.csproj",
+        "projectUniqueName": "G:\\C#\\TIL\\Chapter2_BY\\Chapter2_BY.csproj",
         "projectName": "Chapter2_BY",
-        "projectPath": "G:\\C#\\C#Week1\\Chapter2_BY\\Chapter2_BY.csproj",
+        "projectPath": "G:\\C#\\TIL\\Chapter2_BY\\Chapter2_BY.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "G:\\C#\\C#Week1\\Chapter2_BY\\obj\\",
+        "outputPath": "G:\\C#\\TIL\\Chapter2_BY\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
