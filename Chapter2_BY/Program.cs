@@ -2,6 +2,8 @@
 using System.Security.Cryptography.X509Certificates;
 using System;
 using static System.Collections.Specialized.BitVector32;
+using System.Reflection.Metadata.Ecma335;
+using System.CodeDom.Compiler;
 
 namespace Chapter2_BY
 {
@@ -53,7 +55,7 @@ namespace Chapter2_BY
             Console.WriteLine("\n1. 장착 관리");
             Console.WriteLine("0. 나가기\n");
         }
-     }
+    }
 
     public class Item
     {
@@ -71,10 +73,10 @@ namespace Chapter2_BY
             ItemPrice = itemPrice;
         }
 
-        // 게임 아이템 딕셔너리 선언
-        public static Dictionary<string, Item> items;
-
+        public static Dictionary<string, Item> items; // 게임 아이템 딕셔너리 선언
         public static Dictionary<string, Item> gameItems = new Dictionary<string, Item>(); // 게임 아이템 딕셔너리 생성
+        public static Dictionary<string, Item> equippedItems = new Dictionary<string, Item>(); //장착 아이템 딕셔너리
+
         // 게임 아이템 셋팅
         public static void ItemSetting()
         {
@@ -115,14 +117,14 @@ namespace Chapter2_BY
             }
         }
     }
-    
+
     public class EquipmentManager
     {
-        //장착 아이템 딕셔너리
-        Dictionary<string, Item> equippedItems = new Dictionary<string, Item>();
         // EquippedHandler 라는 delegate 가짐
         public event ItemEquipHandler EquippedHandler;
         public bool equipped = false;
+        public static int plusDefense = 0;
+        public static int plusAttack = 0;
 
         // 이름을 입력 받을시, E 표시 노출, 해제시 사라지기
         public bool EquipItem(string itemName, Dictionary<string, Item> items)
@@ -130,16 +132,26 @@ namespace Chapter2_BY
             if (items.ContainsKey(itemName))
             {
                 Item item = items[itemName];
-                if (!equippedItems.ContainsKey(itemName))
+                if (!Item.equippedItems.ContainsKey(itemName))
                 {
-                    equippedItems.Add(itemName, item);
+                    Item.equippedItems.Add(itemName, item);
+                    // 아이템 장착으로 공격력 & 방어력 증가
+                    foreach (var equipitem in Inventory.playerItems.Values.Where(equipitem => equipitem.ItemType == "방어력+"))
+                    { plusDefense += equipitem.ItemValue; }
+                    foreach (var equipitem in Inventory.playerItems.Values.Where(equipitem => equipitem.ItemType == "공격력+"))
+                    { plusAttack += equipitem.ItemValue; }
                     equipped = true;
                     EquippedHandler?.Invoke(equipped);
                     return equipped;
                 }
                 else
                 {
-                    equippedItems.Remove(itemName);
+                    // 아이템 해제로 공격력 & 방어력 감소
+                    foreach (var equipitem in Inventory.playerItems.Values.Where(equipitem => equipitem.ItemType == "방어력+"))
+                    { plusDefense -= equipitem.ItemValue; }
+                    foreach (var equipitem in Inventory.playerItems.Values.Where(equipitem => equipitem.ItemType == "공격력+"))
+                    { plusAttack -= equipitem.ItemValue; }
+                    Item.equippedItems.Remove(itemName);
                     equipped = false;
                     EquippedHandler?.Invoke(equipped);
                     return equipped;
@@ -178,10 +190,108 @@ namespace Chapter2_BY
         }
     }
 
+    public class Dungeon
+    {
+        int requiredDefense = 0;// 권장 방어력
+        int totalDefense = Character.warrior.Defense + EquipmentManager.plusDefense; // 플레이어의 방어력 가져오기
+        int totalAttack = Character.warrior.Attack + EquipmentManager.plusAttack; // 플레이어의 공격력 가져오기
+        int level;
+        int nowGold;
+
+        public void ShowDungeon() // 던전 보여주기
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\n던전입장");
+            Console.ResetColor();
+            Console.WriteLine("이곳에서 던전을 선택 할 수 있습니다.\n");
+            Console.WriteLine("1. 쉬운 던전\t| 방어력 5 이상 권장");
+            Console.WriteLine("2. 일반 던전\t| 방어력 11 이상 권장");
+            Console.WriteLine("3. 어려운 던전\t| 방어력 17 이상 권장");
+            Console.WriteLine("0. 나가기\n");
+        }
+
+        bool DungeonResult(int requiredDefense) // 확률로 던전 성공여부 반환
+        {
+            if (totalDefense < requiredDefense)
+            {
+                int resultRandom = new Random().Next(0, 10);
+                if (resultRandom < 4)
+                {
+                    Console.WriteLine("던전에 실패 하였습니다.");
+                    Console.WriteLine("체력이 반 감소합니다.");
+                    Character.warrior.HP = (int)(Character.warrior.HP * 0.5); // 실패시 체력 절반 감소
+                    return false;
+                }
+                else
+                {
+                    DungeonSuccess(requiredDefense);
+                    return true;
+                }
+            }
+            else
+            {
+                DungeonSuccess(requiredDefense);
+                return true;
+            }
+        }
+
+        void DungeonSuccess(int requiredDefense) // 던전 성공시 표시
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("던전 클리어");
+            Console.ResetColor();
+            Console.WriteLine("축하합니다!!\n던전을 클리어 하였습니다.");
+            int successRandom = new Random().Next(20, 36);
+            int nowHP = Character.warrior.HP + totalDefense - requiredDefense - successRandom; // 깎일 체력 계산 후 반영
+            int nowGold = Character.warrior.Gold + DungeonGold(level);
+            Console.WriteLine("\n[탐험 결과]");
+            Console.WriteLine("체력 " + Character.warrior.HP + " -> " + nowHP);
+            Console.WriteLine("Gold " + Character.warrior.Gold + " -> " + nowGold);
+            Console.WriteLine("\n0. 나가기\n");
+        }
+
+        int DungeonGold(int level)
+        {
+            int randomBonus = new Random().Next(0, 10);
+            if (level == 1)
+            {
+                nowGold = 1000 + totalAttack * (int)(1 + randomBonus * 0.1);
+                return nowGold;
+            }
+            else if (level == 2)
+            {
+                nowGold = 1700 + totalAttack * (int)(1 + randomBonus * 0.1);
+                return nowGold;
+            }
+            else
+            {
+                nowGold = 2500 + totalAttack * (int)(1 + randomBonus * 0.1);
+                return nowGold;
+            }
+        }
+
+        public void DoDungeon(int level) // 던전 실행
+        {
+            if (level == 1)
+            {
+                DungeonResult(5);
+
+            }
+            else if (level == 2)
+            {
+                DungeonResult(11);
+            }
+            else if (level == 3)
+            {
+                DungeonResult(17);
+            }
+        }
+    }
+
     class Program
     {
         public static int select;
-        
+
         // 게임 첫 시작
         public static void StartGame()
         {
@@ -234,6 +344,7 @@ namespace Chapter2_BY
             Item.ItemSetting(); // 아이템 셋팅
             Inventory inventory = new Inventory(); // 인벤토리 생성
             Shop shop = new Shop(); // 상점 생성
+            Dungeon dungeon = new Dungeon(); // 던전 생성
 
             while (true)
             {
@@ -341,7 +452,12 @@ namespace Chapter2_BY
                 }
                 else if (select == 4) // 던전 입장
                 {
-
+                    while (true)
+                    {
+                        dungeon.ShowDungeon(); // 던전 리스트 보여주기
+                        nextMove();
+                        dungeon.DoDungeon(select);
+                    }
                 }
                 else if (select == 0)
                 {
@@ -349,7 +465,6 @@ namespace Chapter2_BY
                     break;
                 }
                 else Console.WriteLine("잘못된 입력입니다.");
-                }
             }
         }
     }
