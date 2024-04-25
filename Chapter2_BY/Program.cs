@@ -20,6 +20,7 @@ namespace Chapter2_BY
         public int Defense = new Random().Next(4, 7);
         public int HP = 100;
         public int Gold = 1500;
+        public int Exp = 0;
 
         public static Character warrior = new Character(); // 전사 할당
 
@@ -239,6 +240,7 @@ namespace Chapter2_BY
 
         void DungeonSuccess(int requiredDefense) // 던전 성공시 표시
         {
+            LevelUp levelcheck = new LevelUp();
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine("던전 클리어");
             Console.ResetColor();
@@ -251,6 +253,8 @@ namespace Chapter2_BY
             Console.WriteLine("Gold " + Character.warrior.Gold + " -> " + nowGold);
             Character.warrior.HP = nowHP;
             Character.warrior.Gold = nowGold;
+            Character.warrior.Exp++;
+            levelcheck.LevelCheck();
             Console.WriteLine("\n0. 나가기\n");
         }
 
@@ -291,6 +295,38 @@ namespace Chapter2_BY
             }
             else Console.WriteLine("잘못된 입력입니다.");
         }
+    }
+
+    public class LevelUp
+    {
+        public void LevelCheck()
+        {
+            if (Character.warrior.Level == 1 && Character.warrior.Exp == 1)
+            {
+                Character.warrior.Level++;
+                Character.warrior.Attack++;
+                Character.warrior.Defense += 2;
+            }
+            else if (Character.warrior.Level == 2 && Character.warrior.Exp == 2)
+            {
+                Character.warrior.Level++;
+                Character.warrior.Attack++;
+                Character.warrior.Defense += 2;
+            }
+            else if (Character.warrior.Level == 3 && Character.warrior.Exp == 3)
+            {
+                Character.warrior.Level++;
+                Character.warrior.Attack++;
+                Character.warrior.Defense += 2;
+            }
+            else if (Character.warrior.Level == 4 && Character.warrior.Exp == 4)
+            {
+                Character.warrior.Level++;
+                Character.warrior.Attack++;
+                Character.warrior.Defense += 2;
+            }
+            Console.WriteLine("현재 레벨 : " + Character.warrior.Level);
+            Console.WriteLine("현재 경험치 : " + Character.warrior.Exp);
     }
 
     class Program
