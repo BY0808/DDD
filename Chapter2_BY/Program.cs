@@ -1,6 +1,7 @@
 ﻿
 using System.Security.Cryptography.X509Certificates;
 using System;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Chapter2_BY
 {
@@ -24,6 +25,9 @@ namespace Chapter2_BY
 
     public class Inventory()
     {
+        public static Dictionary<string, Item> playerItems = new Dictionary<string, Item>(); // 플레이어 아이템 딕셔너리 생성
+        public static EquipmentManager equip = new EquipmentManager(); // 아이템 장착여부 확인
+
         public void ShowInventory() // 인벤토리 확인하기
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -31,6 +35,18 @@ namespace Chapter2_BY
             Console.ResetColor();
             Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
             Console.WriteLine("\n[아이템 목록]");
+            if (playerItems != null) // 아이템이 있을 경우
+            {
+                foreach (var item in playerItems) // 플레이어 아이템 출력
+                {
+                    Console.Write("- ");
+                    if (equip.equipped == true)
+                    {
+                        Console.Write("[E]");
+                    }
+                    Console.WriteLine(item.Key + "\t| " + item.Value.ItemType + item.Value.ItemValue + " | " + item.Value.ItemExplain);
+                }
+            }
         }
         public void OutInventory()
         {
@@ -62,12 +78,16 @@ namespace Chapter2_BY
         // 게임 아이템 셋팅
         public static void ItemSetting()
         {
+            int randomArmor = new Random().Next(7, 13);
+            int randomWeapon = new Random().Next(5, 7);
             gameItems.Add("수련자 갑옷", new Item("방어력+", 5, "수련에 도움을 주는 갑옷입니다.", 1000));
             gameItems.Add("무쇠갑옷", new Item("방어력+", 9, "무쇠로 만들어져 튼튼한 갑옷입니다.", 1800));
             gameItems.Add("스파르타갑옷", new Item("방어력+", 15, "스파르타의 전사들이 사용했다는 전설의 갑옷입니다.", 3500));
+            gameItems.Add("랜덤 갑옷", new Item("방어력+", randomArmor, "랜덤으로 수치가 결정된 갑옷입니다. ", 1600));
             gameItems.Add("낡은 검", new Item("공격력+", 2, "쉽게 볼 수 있는 낡은 검 입니다.", 600));
             gameItems.Add("청동 도끼", new Item("공격력+", 5, "어디선가 사용됐던거 같은 도끼입니다.", 1500));
             gameItems.Add("스파르타의 창", new Item("공격력+", 7, "스파르타의 전사들이 사용했다는 전설의 창입니다.", 2700));
+            gameItems.Add("랜덤 뿅망치", new Item("공격력+", randomWeapon, "랜덤으로 수치가 결정된 뿅망치 입니다.", 1600));
         }
 
         // 아이템 추가 메서드
@@ -96,7 +116,7 @@ namespace Chapter2_BY
         }
     }
     
-    class EquipmentManager
+    public class EquipmentManager
     {
         //장착 아이템 딕셔너리
         Dictionary<string, Item> equippedItems = new Dictionary<string, Item>();
@@ -152,6 +172,7 @@ namespace Chapter2_BY
             }
             Console.WriteLine("\n원하시는 행동을 입력해주세요.");
             Console.WriteLine("아이템 구매를 원하면 아이템 이름을 입력해주세요.");
+            Console.WriteLine("1.아이템 판매");
             Console.WriteLine("0. 나가기");
             Console.Write(">>");
         }
@@ -160,15 +181,13 @@ namespace Chapter2_BY
     class Program
     {
         public static int select;
-        public static EquipmentManager equip = new EquipmentManager(); // 아이템 장착여부 확인
-        public static Dictionary<string, Item> playerItems = new Dictionary<string, Item>(); // 플레이어 아이템 딕셔너리 생성
-
+        
         // 게임 첫 시작
         public static void StartGame()
         {
             Console.WriteLine("\n스파르타 마을에 오신 여러분 환영합니다.");
             Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
-            Console.WriteLine("\n1. 상태 보기\n2. 인벤토리\n3. 상점\n\n0. 나가기\n");
+            Console.WriteLine("\n1. 상태 보기\n2. 인벤토리\n3. 상점\n4. 던전입장\n\n0. 나가기\n");
         }
 
         // 읽어오기 메소드
@@ -190,17 +209,17 @@ namespace Chapter2_BY
             Console.WriteLine("\nLv. " + character.Level.ToString("D2")); // 레벨
             Console.WriteLine(character.Name + " ( " + character.Job + " ) "); // 이름 + 직업
             Console.Write("공격력 : " + character.Attack); // 공격력
-            if (equip.equipped && playerItems.Values.Any(item => item.ItemType == "공격력+"))
+            if (Inventory.equip.equipped && Inventory.playerItems.Values.Any(item => item.ItemType == "공격력+"))
             {
-                foreach (var item in playerItems.Values.Where(item => item.ItemType == "공격력+"))
+                foreach (var item in Inventory.playerItems.Values.Where(item => item.ItemType == "공격력+"))
                 {
                     Console.Write(" (+" + item.ItemValue + ")");
                 }
             }
             Console.Write("\n방어력 : " + character.Defense); // 방어력
-            if (equip.equipped && playerItems.Values.Any(item => item.ItemType == "방어력+"))
+            if (Inventory.equip.equipped && Inventory.playerItems.Values.Any(item => item.ItemType == "방어력+"))
             {
-                foreach (var item in playerItems.Values.Where(item => item.ItemType == "방어력+"))
+                foreach (var item in Inventory.playerItems.Values.Where(item => item.ItemType == "방어력+"))
                 {
                     Console.Write(" (+" + item.ItemValue + ")");
                 }
@@ -222,26 +241,19 @@ namespace Chapter2_BY
                 nextMove(); // 선택지 입력
                 if (select == 1) // 상태 보기
                 {
-                    StatusWindow(Character.warrior);
-                    nextMove();
+                    while (true)
+                    {
+                        StatusWindow(Character.warrior);
+                        nextMove();
+                        if (select == 0) break;
+                        else Console.WriteLine("잘못된 입력입니다.");
+                    }
                 }
                 else if (select == 2) // 인벤토리 보기
                 {
                     while (true)
                     {
                         inventory.ShowInventory();
-                        if (playerItems != null) // 아이템이 있을 경우
-                        {
-                            foreach (var item in playerItems) // 플레이어 아이템 출력
-                            {
-                                Console.Write("- ");
-                                if (equip.equipped == true)
-                                {
-                                    Console.Write("[E]");
-                                }
-                                Console.WriteLine(item.Key + "\t| " + item.Value.ItemType + item.Value.ItemValue + " | " + item.Value.ItemExplain);
-                            }
-                        }
                         inventory.OutInventory();
                         nextMove();
                         if (select == 1) // 장착관리 선택시
@@ -252,23 +264,12 @@ namespace Chapter2_BY
                                 Console.WriteLine("\n[장착 관리]");
                                 Console.ResetColor();
                                 inventory.ShowInventory();
-                                foreach (var item in playerItems) // 플레이어 아이템 출력
-                                {
-                                    int i = 1;
-                                    Console.Write("- " + i + " ");
-                                    if (equip.equipped == true)
-                                    {
-                                        Console.Write("[E]");
-                                    }
-                                    Console.WriteLine(item.Key + "\t| " + item.Value.ItemType + item.Value.ItemValue + " | " + item.Value.ItemExplain);
-                                    i++;
-                                }
                                 Console.WriteLine("\n0. 나가기\n");
                                 Console.WriteLine("원하시는 행동을 입력해주세요.");
                                 Console.WriteLine("아이템 장착/해제 를 원하면 아이템 이름을 입력해주세요.");
                                 Console.Write(">>");
                                 string action = Console.ReadLine(); // 아이템 이름 입력
-                                equip.EquipItem(action, playerItems); // 장착 & 해제
+                                Inventory.equip.EquipItem(action, Inventory.playerItems); // 장착 & 해제
                                 if (action == "0") // 나가기 선택
                                 {
                                     break;
@@ -284,11 +285,11 @@ namespace Chapter2_BY
                     {
                         shop.ShowShop();
                         string action2 = Console.ReadLine(); // 아이템 이름 입력
-                        if (action2 != "0")
+                        if (action2 != "0" && action2 != "1")
                         {
                             if (Item.gameItems.ContainsKey(action2) && Character.warrior.Gold >= Item.gameItems[action2].ItemPrice)
                             {
-                                playerItems[action2] = Item.gameItems[action2]; // 플레이어 아이템에 추가
+                                Inventory.playerItems[action2] = Item.gameItems[action2]; // 플레이어 아이템에 추가
                                 Character.warrior.Gold -= Item.gameItems[action2].ItemPrice; // 구매한 아이템 가격만큼 Gold 차감
                                 Item.gameItems.Remove(action2); // 게임 아이템리스트에서 제거
                                 Console.WriteLine("구매를 완료했습니다.");
@@ -302,24 +303,52 @@ namespace Chapter2_BY
                                 Console.WriteLine("잘못된 입력입니다.");
                             }
                         }
-                        else if (action2 == "0") // 나가기 선택
+                        else if (action2 == "1") // 아이템 판매 선택
                         {
-                            break;
+                            Console.ForegroundColor = ConsoleColor.DarkBlue;
+                            Console.WriteLine("\n상점 - 아이템 판매");
+                            Console.ResetColor();
+                            Console.WriteLine("판매를 원하면 이름을 입력해주세요.");
+                            Console.WriteLine("[보유 골드]");
+                            Console.WriteLine(Character.warrior.Gold + " G");
+                            inventory.ShowInventory();
+                            Console.WriteLine("원하시는 행동을 입력해주세요.");
+                            Console.Write(">>");
+                            string action3 = Console.ReadLine(); // 판매할 아이템 이름 입력
+                            if (action3 != "0")
+                            {
+                                if (Inventory.playerItems.ContainsKey(action3)) // 플레이어가 가지고 있는 아이템이라면
+                                {
+                                    Item.gameItems[action3] = Inventory.playerItems[action3]; // 게임 아이템에 추가
+                                    Character.warrior.Gold += (int)(Inventory.playerItems[action3].ItemPrice * 0.85); // 85% 가격으로 판매
+                                    if (Inventory.equip.equipped == true) // 아이템 장착이었으면 해제
+                                    {
+                                        Inventory.equip.EquipItem(action3, Inventory.playerItems);
+                                    }
+                                    Inventory.playerItems.Remove(action3); // 플레이어 아이템 에서 제거
+                                    Console.WriteLine("판매를 완료했습니다.");
+                                    nextMove();
+                                }
+                                else if (Inventory.playerItems.Count == 0) Console.WriteLine("판매 가능한 아이템이 없습니다.");
+                                else Console.WriteLine("잘못된 입력입니다.");
+                            }
+                            else if (action2 == "0") break;
+                            else Console.WriteLine("잘못된 입력입니다.");
                         }
-                        else
-                        {
-                            Console.WriteLine("잘못된 입력입니다.");
-                        }
+                        else if (action2 == "0") break;
+                        else Console.WriteLine("잘못된 입력입니다.");
                     }
+                }
+                else if (select == 4) // 던전 입장
+                {
+
                 }
                 else if (select == 0)
                 {
                     Console.WriteLine("게임을 종료합니다. ");
                     break;
                 }
-                else
-                {
-                    Console.WriteLine("잘못된 입력입니다.");
+                else Console.WriteLine("잘못된 입력입니다.");
                 }
             }
         }
