@@ -212,23 +212,28 @@ namespace Chapter2_BY
 
         void DungeonResult(int requiredDefense) // 확률로 던전 성공여부 반환
         {
-            if (totalDefense < requiredDefense)
+            if (Character.warrior.HP <= 30)
+            { Console.WriteLine("체력이 부족합니다. 던전에 입장할 수 없습니다."); }
+            else
             {
-                int resultRandom = new Random().Next(0, 10);
-                if (resultRandom < 4)
+                if (totalDefense < requiredDefense)
                 {
-                    Console.WriteLine("던전에 실패 하였습니다.");
-                    Console.WriteLine("체력이 반 감소합니다.");
-                    Character.warrior.HP = (int)(Character.warrior.HP * 0.5); // 실패시 체력 절반 감소
+                    int resultRandom = new Random().Next(0, 10);
+                    if (resultRandom < 4)
+                    {
+                        Console.WriteLine("던전에 실패 하였습니다.");
+                        Console.WriteLine("체력이 반 감소합니다.");
+                        Character.warrior.HP = (int)(Character.warrior.HP * 0.5); // 실패시 체력 절반 감소
+                    }
+                    else
+                    {
+                        DungeonSuccess(requiredDefense);
+                    }
                 }
                 else
                 {
                     DungeonSuccess(requiredDefense);
                 }
-            }
-            else
-            {
-                DungeonSuccess(requiredDefense);
             }
         }
 
@@ -297,7 +302,7 @@ namespace Chapter2_BY
         {
             Console.WriteLine("\n스파르타 마을에 오신 여러분 환영합니다.");
             Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
-            Console.WriteLine("\n1. 상태 보기\n2. 인벤토리\n3. 상점\n4. 던전입장\n\n0. 나가기\n");
+            Console.WriteLine("\n1. 상태 보기\n2. 인벤토리\n3. 상점\n4. 던전입장\n5. 휴식하기\n\n0. 나가기\n");
         }
 
         // 읽어오기 메소드
@@ -459,6 +464,27 @@ namespace Chapter2_BY
                         dungeon.DoDungeon(select);
                         nextMove();
                         if (select == 0) break;
+                        else Console.WriteLine("잘못된 입력입니다.");
+                    }
+                }
+                else if (select == 5) // 휴식하기
+                {
+                    while (true)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("\n휴식하기");
+                        Console.ResetColor();
+                        Console.Write("500 G 를 내면 체력을 회복할 수 있습니다.\t(보유 골드 : ");
+                        Console.WriteLine(Character.warrior.Gold + " G)\n");
+                        Console.WriteLine("1. 휴식하기\n0. 나가기\n");
+                        nextMove();
+                        if (select == 1 && Character.warrior.Gold >= 500)
+                        {
+                            Console.WriteLine("체력을 회복합니다!");
+                            Character.warrior.HP = 100; // 체력 회복
+                            Character.warrior.Gold -= 500; // 500 G 소모
+                        }
+                        else if (select == 0) break;
                         else Console.WriteLine("잘못된 입력입니다.");
                     }
                 }
