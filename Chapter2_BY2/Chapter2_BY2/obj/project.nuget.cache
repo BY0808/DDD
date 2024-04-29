@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "ti2uloqWGJ/32D9+bsmsZ57fuX4tSMKQElrlLOsd5y/a8z8Fx5P724ZU0e1qabKZS6QvS2aAyPvCKq4STHYgyg==",
+  "success": true,
+  "projectFilePath": "G:\\C#\\TIL\\Chapter2_BY2\\Chapter2_BY2\\Chapter2_BY2.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\user\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
