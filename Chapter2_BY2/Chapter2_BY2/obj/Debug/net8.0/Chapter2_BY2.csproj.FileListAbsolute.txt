@@ -1,0 +1,15 @@
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\bin\Debug\net8.0\Chapter2_BY2.exe
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\bin\Debug\net8.0\Chapter2_BY2.deps.json
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\bin\Debug\net8.0\Chapter2_BY2.runtimeconfig.json
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\bin\Debug\net8.0\Chapter2_BY2.dll
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\bin\Debug\net8.0\Chapter2_BY2.pdb
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\Chapter2_BY2.GeneratedMSBuildEditorConfig.editorconfig
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\Chapter2_BY2.AssemblyInfoInputs.cache
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\Chapter2_BY2.AssemblyInfo.cs
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\Chapter2_BY2.csproj.CoreCompileInputs.cache
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\Chapter2_BY2.sourcelink.json
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\Chapter2_BY2.dll
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\refint\Chapter2_BY2.dll
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\Chapter2_BY2.pdb
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\Chapter2_BY2.genruntimeconfig.cache
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\ref\Chapter2_BY2.dll
