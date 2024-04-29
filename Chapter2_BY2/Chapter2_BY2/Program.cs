@@ -1,6 +1,7 @@
 ﻿
 
 
+
 namespace Chapter2_BY2
 {
     public class GameManager
@@ -10,6 +11,8 @@ namespace Chapter2_BY2
 
         private List<Item> storeInventory;
 
+        private Dungeon dungeon;
+
         public GameManager() //클래스와 이름이 같은 함수, 생성자, 클래스 호출시 실행
         {
             InitializeGame();
@@ -18,7 +21,7 @@ namespace Chapter2_BY2
         private void InitializeGame()
         {
             //기본적인 초기화!
-            player = new Player("BoB", "Huge", 1, 10, 5, 100, 2000);
+            player = new Player("BoB", "Huge", 1, 10, 5, 100, 10000);
 
             inventory = new List<Item>();
 
@@ -152,8 +155,15 @@ namespace Chapter2_BY2
             }
         }
 
-        private void EquipMenu()
+        private void EquipMenu(string? prompt = null)
         {
+            if (prompt != null)
+            {
+                Console.Clear();
+                ConsoleUtility.ShowTitle(prompt);
+                Thread.Sleep(1000);
+            }
+
             Console.Clear();
 
             ConsoleUtility.ShowTitle("■ 인벤토리 ■");
@@ -197,15 +207,55 @@ namespace Chapter2_BY2
             }
             Console.WriteLine();
             Console.WriteLine("1. 아이템 구매");
+            Console.WriteLine("2. 아이템 판매");
             Console.WriteLine("0. 나가기");
             Console.WriteLine();
-            switch (ConsoleUtility.PromptMenuChoice(0, 1))
+            switch (ConsoleUtility.PromptMenuChoice(0, 2))
             {
                 case 0:
                     MainMenu();
                     break;
                 case 1:
                     PurchaseMenu();
+                    break;
+                case 2:
+                    SellingMenu();
+                    break;
+            }
+        }
+
+        private void SellingMenu()
+        {
+            Console.Clear();
+
+            ConsoleUtility.ShowTitle("■ 상  점 ■");
+            Console.WriteLine("소지한 아이템을 판매 할 수 있습니다.");
+            Console.WriteLine();
+            Console.WriteLine("[보유 골드]");
+            ConsoleUtility.PrintTextHighlights("", player.Gold.ToString(), " G");
+            Console.WriteLine();
+            Console.WriteLine("[아이템 목록]");
+            for (int i = 0; i < inventory.Count; i++)
+            {
+                inventory[i].PrintItemStatDescription(true, i + 1);
+            }
+            Console.WriteLine();
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+
+            int keyInput = ConsoleUtility.PromptMenuChoice(0, inventory.Count);
+
+            switch (keyInput)
+            {
+                case 0:
+                    StoreMenu();
+                    break;
+                default:
+                    // 판매시 85%의 가격에 판매
+                    player.Gold += (int)(storeInventory[keyInput - 1].Price * 0.85);
+                    inventory[keyInput - 1].Purchase();
+                    storeInventory.Add(inventory[keyInput - 1]);
+                    SellingMenu();
                     break;
             }
         }
