@@ -10,10 +10,11 @@ namespace Chapter2_BY2
     {
         private Player player;
         private List<Item> inventory;
-
         private List<Item> storeInventory;
 
         private Dungeon dungeon;
+
+        private List<Monster> monsters;
 
         public GameManager() //클래스와 이름이 같은 함수, 생성자, 클래스 호출시 실행
         {
@@ -34,6 +35,11 @@ namespace Chapter2_BY2
             storeInventory.Add(new Item("낡은 검", "적당한 무기", ItemType.WEAPON, 2, 0, 0, 600));
             storeInventory.Add(new Item("청동 도끼", "조금좋은 무기", ItemType.WEAPON, 5, 0, 0, 1500));
             storeInventory.Add(new Item("스파르타 창", "좋은 무기", ItemType.WEAPON, 7, 0, 0, 3500));
+
+            monsters = new List<Monster>();
+            monsters.Add(new Monster("미니언", 2, 15, 5, 0));
+            monsters.Add(new Monster("공허충", 3, 10, 9, 1));
+            monsters.Add(new Monster("대포미니언", 5, 25, 8, 2));
         }
 
         //Program 이라는 다른 클래스 접근!
@@ -351,8 +357,44 @@ namespace Chapter2_BY2
         }
         public void BattleMenu()
         {
-            Mosnster[] monster = new Monster[];
+            int nowHp = player.Hp;
+            int maxHp = player.Hp;
+            Console.Clear();
+            while (true)
+            {
+                ConsoleUtility.ShowTitle("Battle!!");
+                Console.WriteLine();
+                //배틀 레벨별 몬스터 셋팅
+                Console.WriteLine();
+                Console.WriteLine("[내정보]");
+                ConsoleUtility.PrintTextHighlights("Lv. ", player.Level.ToString("00"));
+                Console.WriteLine($"{player.Name} ( {player.Job} )");
+                //현재 체력 표시과 시작체력 표시
+                ConsoleUtility.PrintTextHighlights("HP ", nowHp.ToString("000"), "/" + maxHp.ToString("000"));
+                Console.WriteLine();
+
+                switch (ConsoleUtility.PromptMenuChoice(1,2))
+                {
+                    case 1:
+                        //일반공격
+                        //적의 차례
+                        break;
+                    case 2:
+                        //스킬공격
+                        //적의 차례
+                        break;
+                }
+
+                if (nowHp == 0 ) //배틀 종료조건 셋팅
+                {
+                    player.Hp = nowHp;
+                    break;
+                }
+            }
         }
+
+        //배틀 레벨별 몬스터 셋팅
+        //적의 차례 구현
 
     }
 
