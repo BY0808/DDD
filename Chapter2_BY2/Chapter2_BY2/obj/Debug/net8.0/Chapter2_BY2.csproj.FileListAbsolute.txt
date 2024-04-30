@@ -13,3 +13,6 @@ G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\refint\Chapter2_BY2.dll
 G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\Chapter2_BY2.pdb
 G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\Chapter2_BY2.genruntimeconfig.cache
 G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\ref\Chapter2_BY2.dll
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\bin\Debug\net8.0\Newtonsoft.Json.dll
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\Chapter2_BY2.csproj.AssemblyReference.cache
+G:\C#\TIL\Chapter2_BY2\Chapter2_BY2\obj\Debug\net8.0\Chapter2.E7D077E3.Up2Date

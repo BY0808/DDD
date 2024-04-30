@@ -13,7 +13,7 @@ namespace Chapter2_BY2
     {
         public string Name { get; }
         public string Desc { get; }
-        private ItemType type;
+        public ItemType type { get; }
         public int Atk { get; }
         public int Def { get; }
         public int Hp { get; }
