@@ -8,7 +8,7 @@
         public int Level { get; }
         public int Atk { get; }
         public int Def {  get; }
-        public int Hp { get; }
+        public int Hp { get; set; }
         public int Gold { get; set; }
 
         // 생성자 용도는 기본 셋팅
