@@ -1,4 +1,5 @@
-﻿namespace Chapter2_BY2
+﻿
+namespace Chapter2_BY2
 {
     //던전 타입 어떤것 있는지 정의
     public enum dungeonType
@@ -10,9 +11,6 @@
 
     internal class Dungeon
     {
-        public int requiredDef = 0; // 권장 방어력
-        public int totalDef = 0;
-        public int totalAtk = 0;
 
         public void ShowDungeon()
         {
@@ -26,6 +24,10 @@
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
             Console.WriteLine();
+        }
+
+        internal void DoDungeon(int playerDef)
+        {
         }
     }
 }

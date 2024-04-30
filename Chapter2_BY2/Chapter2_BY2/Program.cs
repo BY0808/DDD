@@ -2,6 +2,8 @@
 
 
 
+using System.Runtime;
+
 namespace Chapter2_BY2
 {
     public class GameManager
@@ -62,11 +64,12 @@ namespace Chapter2_BY2
             Console.WriteLine("1. 상태창");
             Console.WriteLine("2. 인벤");
             Console.WriteLine("3. 상점");
+            Console.WriteLine("4. 전투 시작");
 
             Console.WriteLine();
 
             //2. 선택 결과를 검증
-            int choice = ConsoleUtility.PromptMenuChoice(1,3);
+            int choice = ConsoleUtility.PromptMenuChoice(1,4);
 
             //3. 선택한 결과에 따라 보내줌
             switch (choice)
@@ -80,9 +83,13 @@ namespace Chapter2_BY2
                 case 3:
                     StoreMenu();
                     break;
+                case 4:
+                    BattleMenu();
+                    break;
             }
             MainMenu();
         }
+
 
         private void StatusMenu()
         {
@@ -317,6 +324,36 @@ namespace Chapter2_BY2
                     break;
             }
         }
+
+        private void DungeonMenu()
+        {
+            dungeon.ShowDungeon();
+            switch (ConsoleUtility.PromptMenuChoice(0, 3))
+            {
+                case 0:
+                    MainMenu();
+                    break;
+                default:
+                    //체력이 부족해서 던전 입장이 불가능한 경우
+                    if (player.Hp <= 30)
+                    {
+                        Console.WriteLine("체력이 부족합니다.");
+                        dungeon.ShowDungeon();
+                    }
+                    else
+                    {
+                        dungeon.DoDungeon(player.Def);
+                        dungeon.DoDungeon(player.Def);
+                    }
+                    dungeon.ShowDungeon();
+                    break;
+            }
+        }
+        public void BattleMenu()
+        {
+            Mosnster[] monster = new Monster[];
+        }
+
     }
 
     public class Program
